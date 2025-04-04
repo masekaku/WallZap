@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallzap - All Wallpapers</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Video Iklan sebagai Background -->
+    <div class="ad-background">
+        <iframe src="https://dood.la/e/ad-video-id" frameborder="0" allowfullscreen muted loop></iframe>
+    </div>
+
+    <!-- Konten Utama -->
+    <header>
+        <nav>
+            <div class="logo">Wallzap</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="wallpaper-container">
+            <img src="https://source.unsplash.com/random/800x450?wallpaper" alt="Featured Wallpaper">
+            <div class="wallpaper-info">
+                <h2>Featured Wallpaper</h2>
+                <p>Explore tons of stunning designs!</p>
+                <a href="#" class="download-btn" data-final-url="https://unsplash.com/s/photos/wallpaper">Download</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="gallery">
+        <h2>All Wallpapers</h2>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search wallpapers (e.g., neon, space)">
+            <button id="search-btn" class="search-btn">Search</button>
+        </div>
+        <button id="refresh-btn" class="refresh-btn">Load More Wallpapers</button>
+        <!-- Iklan Adsterra Banner -->
+        <div class="adsterra-banner">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '9928a929ae7656a3ff61884998333e1b',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/9928a929ae7656a3ff61884998333e1b/invoke.js"></script>
+        </div>
+        <div class="wallpaper-grid" id="wallpaper-grid">
+            <!-- Wallpaper akan ditambahkan via JavaScript -->
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Wallzap</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

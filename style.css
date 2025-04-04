@@ -1,0 +1,272 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    background: #0a0a23;
+    color: #fff;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Video Iklan Background */
+.ad-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.adsterra-banner {
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+}
+
+.ad-background iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    filter: blur(5px);
+}
+
+header {
+    background: linear-gradient(45deg, #1e90ff, #ff00ff);
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 0 10px #00ffcc;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00ffcc;
+    text-shadow: 0 0 5px #00ffcc;
+}
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 1rem 2rem;
+    position: relative;
+}
+
+.wallpaper-container {
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.wallpaper-container img {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+}
+
+.wallpaper-info h2 {
+    font-size: 2rem;
+    margin: 1rem 0;
+    color: #00ffcc;
+    text-shadow: 0 0 10px #00ffcc;
+}
+
+.wallpaper-info p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.download-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(45deg, #ff00ff, #1e90ff);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ff00ff;
+}
+
+.gallery {
+    padding: 4rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.gallery h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+.search-bar {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#search-input {
+    padding: 0.8rem;
+    width: 70%;
+    max-width: 400px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1rem;
+}
+
+#search-input::placeholder {
+    color: #ccc;
+}
+
+.search-btn {
+    padding: 0.8rem 2rem;
+    background: linear-gradient(45deg, #00ffcc, #ff00ff);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ffcc;
+}
+
+.refresh-btn {
+    padding: 0.8rem 2rem;
+    background: linear-gradient(45deg, #00ffcc, #ff00ff);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ffcc;
+}
+
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.wallpaper-card {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.wallpaper-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.wallpaper-card img:hover {
+    transform: scale(1.05);
+}
+
+.wallpaper-card h3 {
+    margin: 0.5rem 0;
+    color: #00ffcc;
+}
+
+footer {
+    background: linear-gradient(45deg, #1e90ff, #ff00ff);
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+/* Responsif untuk Smartphone */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .wallpaper-container img {
+        max-height: 300px;
+    }
+    .wallpaper-info h2 {
+        font-size: 1.5rem;
+    }
+    .download-btn, .refresh-btn, .search-btn {
+        padding: 0.6rem 1.5rem;
+    }
+    .wallpaper-card img {
+        height: 200px;
+    }
+    .search-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    #search-input {
+        width: 90%;
+    }
+}
