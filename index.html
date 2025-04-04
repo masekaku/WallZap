@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallzap - All Wallpapers</title>
+    <title>Wallzep Earn - Watch Videos & Earn Money</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -16,53 +16,63 @@
     <!-- Konten Utama -->
     <header>
         <nav>
-            <div class="logo">Wallzap</div>
+            <div class="logo">Wallzep Earn</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#missions">Missions</a></li>
+                <li><a href="#register">Daftar</a></li>
+                <li><a href="#attendance">Kehadiran</a></li>
+                <li><a href="#withdrawal">Penarikan</a></li>
+                <li><a href="#invite">Undang Teman</a></li>
             </ul>
         </nav>
     </header>
 
     <section id="home" class="hero">
-        <div class="wallpaper-container">
-            <img src="https://source.unsplash.com/random/800x450?wallpaper" alt="Featured Wallpaper">
-            <div class="wallpaper-info">
-                <h2>Featured Wallpaper</h2>
-                <p>Explore tons of stunning designs!</p>
-                <a href="#" class="download-btn" data-final-url="https://unsplash.com/s/photos/wallpaper">Download</a>
+        <div class="video-container">
+            <iframe id="featured-video" frameborder="0" allowfullscreen></iframe>
+            <div class="video-info">
+                <h2>Featured Video</h2>
+                <p>Watch videos & earn money!</p>
+                <a href="#" class="watch-btn" data-video-id="">Watch Now</a>
             </div>
         </div>
     </section>
 
-    <section id="gallery" class="gallery">
-        <h2>All Wallpapers</h2>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search wallpapers (e.g., neon, space)">
-            <button id="search-btn" class="search-btn">Search</button>
-        </div>
-        <button id="refresh-btn" class="refresh-btn">Load More Wallpapers</button>
-        <!-- Iklan Adsterra Banner -->
-        <div class="adsterra-banner">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '9928a929ae7656a3ff61884998333e1b',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/9928a929ae7656a3ff61884998333e1b/invoke.js"></script>
-        </div>
-        <div class="wallpaper-grid" id="wallpaper-grid">
-            <!-- Wallpaper akan ditambahkan via JavaScript -->
-        </div>
+    <section id="missions" class="missions">
+        <h2>Misi Harian - Earn Points</h2>
+        <p>Watch videos to earn points! Redeem to DANA or Crypto.</p>
+        <div id="points-display">Points: <span id="user-points">0</span></div>
+        <button id="watch-video-btn" class="mission-btn">Watch Video (10 Points)</button>
+        <iframe id="mission-video" frameborder="0" allowfullscreen style="display: none;"></iframe>
+    </section>
+
+    <section id="register" class="register">
+        <h2>Daftar</h2>
+        <p>Sign up to start earning!</p>
+        <button id="register-btn" class="mission-btn">Register (Simulated)</button>
+    </section>
+
+    <section id="attendance" class="attendance">
+        <h2>Kehadiran</h2>
+        <p>Check in daily for bonus points!</p>
+        <button id="attendance-btn" class="mission-btn">Check In (5 Points)</button>
+    </section>
+
+    <section id="withdrawal" class="withdrawal">
+        <h2>Penarikan</h2>
+        <p>Redeem points to DANA or Crypto (100 points = Rp 1,000).</p>
+        <button id="withdraw-btn" class="mission-btn">Withdraw (Simulated)</button>
+    </section>
+
+    <section id="invite" class="invite">
+        <h2>Undang Teman</h2>
+        <p>Invite friends and earn 20 points per referral!</p>
+        <button id="invite-btn" class="mission-btn">Invite (Simulated)</button>
     </section>
 
     <footer>
-        <p>© 2025 Wallzap. Powered by xAI & Unsplash.</p>
+        <p>© 2025 Wallzep Earn. Powered by xAI & YouTube.</p>
     </footer>
 
     <script src="script.js"></script>
