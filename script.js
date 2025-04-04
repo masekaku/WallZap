@@ -1,11 +1,11 @@
 // YouTube API Key
 const YOUTUBE_API_KEY = "AIzaSyBT-lB5jJk1tnROcIoI908aS9U-af2q9-8";
 
-// Simulasi poin pengguna (disimpan di localStorage)
-let userPoints = localStorage.getItem("userPoints") ? parseInt(localStorage.getItem("userPoints")) : 0;
-document.getElementById("user-points").textContent = userPoints;
+// Variabel pengguna
+let currentUser = null;
+let userPoints = 0;
 
-// Fungsi untuk mengambil video YouTube via API untuk latar belakang
+// Fungsi untuk mengambil video YouTube untuk latar belakang
 function loadYouTubeBackground() {
     const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=futuristic+wallpaper&key=${YOUTUBE_API_KEY}&maxResults=1`;
     fetch(apiUrl)
@@ -13,14 +13,13 @@ function loadYouTubeBackground() {
         .then(data => {
             if (data.items && data.items.length > 0) {
                 const videoId = data.items[0].id.videoId;
-                const youtubeIframe = document.getElementById("youtube-bg");
-                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&iv_load_policy=3`;
+                document.getElementById("youtube-bg").src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&iv_load_policy=3`;
             }
         })
         .catch(error => console.error("Error fetching YouTube video:", error));
 }
 
-// Fungsi untuk memuat video unggulan di beranda
+// Fungsi untuk memuat video unggulan
 function loadFeaturedVideo() {
     const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=trending+short+video&key=${YOUTUBE_API_KEY}&maxResults=1`;
     fetch(apiUrl)
@@ -28,16 +27,14 @@ function loadFeaturedVideo() {
         .then(data => {
             if (data.items && data.items.length > 0) {
                 const videoId = data.items[0].id.videoId;
-                const featuredVideo = document.getElementById("featured-video");
-                const watchBtn = document.querySelector(".watch-btn");
-                featuredVideo.src = `https://www.youtube.com/embed/${videoId}`;
-                watchBtn.setAttribute("data-video-id", videoId);
+                document.getElementById("featured-video").src = `https://www.youtube.com/embed/${videoId}`;
+                document.querySelector(".watch-btn").setAttribute("data-video-id", videoId);
             }
         })
         .catch(error => console.error("Error fetching featured video:", error));
 }
 
-// Fungsi untuk menangani klik tombol "Watch Now"
+// Fungsi untuk menangani klik "Watch Now"
 function handleWatchVideo(event) {
     event.preventDefault();
     const directLink = "https://www.effectiveratecpm.com/ytydge8ted?key=f4e596ec641bf679bcc201d281e1ce64";
@@ -51,8 +48,12 @@ function handleWatchVideo(event) {
     }, 15000);
 }
 
-// Fungsi misi harian: menonton video
+// Fungsi misi harian
 function watchMissionVideo() {
+    if (!currentUser) {
+        alert("Please register and login first!");
+        return;
+    }
     const videoIframe = document.getElementById("mission-video");
     videoIframe.style.display = "block";
     fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=short+ad&key=${YOUTUBE_API_KEY}&maxResults=1`)
@@ -65,41 +66,141 @@ function watchMissionVideo() {
                     videoIframe.style.display = "none";
                     videoIframe.src = "";
                     userPoints += 10;
-                    localStorage.setItem("userPoints", userPoints);
-                    document.getElementById("user-points").textContent = userPoints;
+                    updateUserPoints();
                     alert("You earned 10 points!");
                 }, 30000); // 30 detik
             }
         });
 }
 
-// Simulasi kehadiran harian
+// Fungsi untuk memperbarui poin di Firestore
+function updateUserPoints() {
+    if (currentUser) {
+        setDoc(doc(db, "users", currentUser.uid), {
+            email: currentUser.email,
+            points: userPoints
+        }, { merge: true });
+        document.getElementById("user-points").textContent = userPoints;
+    }
+}
+
+// Fungsi untuk memuat poin pengguna
+function loadUserPoints() {
+    if (currentUser) {
+        getDoc(doc(db, "users", currentUser.uid)).then(docSnap => {
+            if (docSnap.exists()) {
+                userPoints = docSnap.data().points || 0;
+                document.getElementById("user-points").textContent = userPoints;
+            }
+        });
+    }
+}
+
+// Fungsi kehadiran
 function checkAttendance() {
+    if (!currentUser) {
+        alert("Please register and login first!");
+        return;
+    }
     userPoints += 5;
-    localStorage.setItem("userPoints", userPoints);
-    document.getElementById("user-points").textContent = userPoints;
+    updateUserPoints();
     alert("You earned 5 points for checking in!");
 }
 
-// Simulasi penarikan
-function withdrawPoints() {
+// Fungsi penarikan Litecoin
+function handleWithdraw(event) {
+    event.preventDefault();
+    if (!currentUser) {
+        alert("Please register and login first!");
+        return;
+    }
     if (userPoints >= 100) {
+        const litecoinAddress = document.getElementById("litecoin-address").value.trim();
+        if (!litecoinAddress) {
+            alert("Please enter your Litecoin address!");
+            return;
+        }
         userPoints -= 100;
-        localStorage.setItem("userPoints", userPoints);
-        document.getElementById("user-points").textContent = userPoints;
-        alert("Withdrawal successful! Rp 1,000 sent to DANA (simulated).");
+        updateUserPoints();
+
+        // Simpan permintaan penarikan di Firestore
+        addDoc(collection(db, "withdrawals"), {
+            userId: currentUser.uid,
+            email: currentUser.email,
+            litecoinAddress: litecoinAddress,
+            amount: 0.000001, // 100 poin = 0.000001 LTC
+            timestamp: serverTimestamp(),
+            status: "pending"
+        }).then(() => {
+            document.getElementById("withdraw-form").style.display = "none";
+            document.getElementById("withdraw-status").style.display = "block";
+            alert("Withdrawal request submitted! 0.001 LTC will be sent manually to " + litecoinAddress);
+        });
     } else {
         alert("You need at least 100 points to withdraw!");
     }
 }
 
-// Simulasi undang teman
+// Fungsi undang teman (simulasi)
 function inviteFriend() {
+    if (!currentUser) {
+        alert("Please register and login first!");
+        return;
+    }
     userPoints += 20;
-    localStorage.setItem("userPoints", userPoints);
-    document.getElementById("user-points").textContent = userPoints;
+    updateUserPoints();
     alert("You earned 20 points for inviting a friend (simulated)!");
 }
+
+// Fungsi pendaftaran
+function handleRegister(event) {
+    event.preventDefault();
+    const email = document.getElementById("register-email").value.trim();
+    const password = document.getElementById("register-password").value.trim();
+
+    createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+            currentUser = userCredential.user;
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("register-message").style.display = "none";
+            document.getElementById("register-status").style.display = "block";
+            document.getElementById("registered-user").textContent = email;
+            alert("Registration successful! You are now logged in.");
+            loadUserPoints();
+        })
+        .catch(error => alert("Error: " + error.message));
+}
+
+// Fungsi logout
+function handleLogout() {
+    signOut(auth).then(() => {
+        currentUser = null;
+        userPoints = 0;
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("register-message").style.display = "block";
+        document.getElementById("register-status").style.display = "none";
+        document.getElementById("user-points").textContent = "0";
+        document.getElementById("withdraw-form").style.display = "block";
+        document.getElementById("withdraw-status").style.display = "none";
+        alert("You have logged out.");
+    });
+}
+
+// Cek status autentikasi
+onAuthStateChanged(auth, user => {
+    if (user) {
+        currentUser = user;
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("register-message").style.display = "none";
+        document.getElementById("register-status").style.display = "block";
+        document.getElementById("registered-user").textContent = user.email;
+        loadUserPoints();
+    } else {
+        currentUser = null;
+        userPoints = 0;
+        document.getElementById("user-points").textContent = "0";
+    }
+});
 
 // Load saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
@@ -116,7 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".watch-btn").addEventListener("click", handleWatchVideo);
     document.getElementById("watch-video-btn").addEventListener("click", watchMissionVideo);
     document.getElementById("attendance-btn").addEventListener("click", checkAttendance);
-    document.getElementById("withdraw-btn").addEventListener("click", withdrawPoints);
+    document.getElementById("withdraw-form").addEventListener("submit", handleWithdraw);
     document.getElementById("invite-btn").addEventListener("click", inviteFriend);
-    document.getElementById("register-btn").addEventListener("click", () => alert("Registration simulated!"));
+    document.getElementById("register-form").addEventListener("submit", handleRegister);
+    document.getElementById("logout-btn").addEventListener("click", handleLogout);
 });
