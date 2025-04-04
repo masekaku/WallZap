@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallzep Earn - Watch Videos & Earn Money</title>
+    <title>Wallzep Earn - Watch Videos & Earn Litecoin</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Video YouTube sebagai Background -->
     <div class="ad-background">
         <iframe id="youtube-bg" frameborder="0" allowfullscreen muted loop></iframe>
     </div>
 
-    <!-- Konten Utama -->
     <header>
         <nav>
             <div class="logo">Wallzep Earn</div>
@@ -33,15 +31,28 @@
             <iframe id="featured-video" frameborder="0" allowfullscreen></iframe>
             <div class="video-info">
                 <h2>Featured Video</h2>
-                <p>Watch videos & earn money!</p>
+                <p>Watch videos & earn Litecoin!</p>
                 <a href="#" class="watch-btn" data-video-id="">Watch Now</a>
+            </div>
+            <!-- Iklan Adsterra Banner -->
+            <div class="adsterra-banner">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key': '017dc3edd15658e924e6cd23ff11b784',
+                        'format': 'iframe',
+                        'height': 250,
+                        'width': 300,
+                        'params': {}
+                    };
+                </script>
+                <script type="text/javascript" src="//incredibleenhancementslightning.com/017dc3edd15658e924e6cd23ff11b784/invoke.js"></script>
             </div>
         </div>
     </section>
 
     <section id="missions" class="missions">
         <h2>Misi Harian - Earn Points</h2>
-        <p>Watch videos to earn points! Redeem to DANA or Crypto.</p>
+        <p>Watch videos to earn points! Redeem to Litecoin.</p>
         <div id="points-display">Points: <span id="user-points">0</span></div>
         <button id="watch-video-btn" class="mission-btn">Watch Video (10 Points)</button>
         <iframe id="mission-video" frameborder="0" allowfullscreen style="display: none;"></iframe>
@@ -49,8 +60,13 @@
 
     <section id="register" class="register">
         <h2>Daftar</h2>
-        <p>Sign up to start earning!</p>
-        <button id="register-btn" class="mission-btn">Register (Simulated)</button>
+        <p id="register-message">Sign up to start earning!</p>
+        <form id="register-form" style="display: block;">
+            <input type="email" id="register-email" placeholder="Your Email" required>
+            <input type="password" id="register-password" placeholder="Password" required>
+            <button type="submit" class="mission-btn">Register</button>
+        </form>
+        <div id="register-status" style="display: none;">Logged in as: <span id="registered-user"></span> <button id="logout-btn" class="mission-btn">Logout</button></div>
     </section>
 
     <section id="attendance" class="attendance">
@@ -61,8 +77,12 @@
 
     <section id="withdrawal" class="withdrawal">
         <h2>Penarikan</h2>
-        <p>Redeem points to DANA or Crypto (100 points = Rp 1,000).</p>
-        <button id="withdraw-btn" class="mission-btn">Withdraw (Simulated)</button>
+        <p>Redeem 100 points = 0.001 LTC (Litecoin). Processed manually.</p>
+        <form id="withdraw-form" style="display: block;">
+            <input type="text" id="litecoin-address" placeholder="Your Litecoin Address" required>
+            <button type="submit" class="mission-btn">Request Withdrawal</button>
+        </form>
+        <div id="withdraw-status" style="display: none;">Withdrawal requested! Please wait for manual processing.</div>
     </section>
 
     <section id="invite" class="invite">
@@ -75,6 +95,40 @@
         <p>© 2025 Wallzep Earn. Powered by xAI & YouTube.</p>
     </footer>
 
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGT7C0M3uzPyF7Go0E4K5FHWP6chrGFk8",
+            authDomain: "wallzepearn.firebaseapp.com",
+            projectId: "wallzepearn",
+            storageBucket: "wallzepearn.firebasestorage.app",
+            messagingSenderId: "937969424294",
+            appId: "1:937969424294:web:e91db83b5f00cbef3fa167",
+            measurementId: "G-4HR2XL9GV2"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Ekspor variabel ke global scope
+        window.auth = auth;
+        window.db = db;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.serverTimestamp = serverTimestamp;
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
