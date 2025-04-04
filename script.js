@@ -5,6 +5,11 @@ const YOUTUBE_API_KEY = "AIzaSyBT-lB5jJk1tnROcIoI908aS9U-af2q9-8";
 let currentUser = null;
 let userPoints = 0;
 
+// Fungsi untuk menghasilkan kode referral unik
+function generateReferralCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase(); // Kode 6 karakter
+}
+
 // Fungsi untuk mengambil video YouTube untuk latar belakang
 function loadYouTubeBackground() {
     const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=futuristic+wallpaper&key=${YOUTUBE_API_KEY}&maxResults=1`;
@@ -78,19 +83,30 @@ function updateUserPoints() {
     if (currentUser) {
         setDoc(doc(db, "users", currentUser.uid), {
             email: currentUser.email,
-            points: userPoints
-        }, { merge: true });
-        document.getElementById("user-points").textContent = userPoints;
+            points: userPoints,
+            referralCode: currentUser.referralCode || generateReferralCode() // Pastikan kode ada
+        }, { merge: true }).then(() => {
+            if (!currentUser.referralCode) {
+                currentUser.referralCode = document.getElementById("referral-code").textContent;
+            }
+            document.getElementById("user-points").textContent = userPoints;
+        });
     }
 }
 
-// Fungsi untuk memuat poin pengguna
+// Fungsi untuk memuat poin dan kode referral pengguna
 function loadUserPoints() {
     if (currentUser) {
         getDoc(doc(db, "users", currentUser.uid)).then(docSnap => {
             if (docSnap.exists()) {
-                userPoints = docSnap.data().points || 0;
+                const data = docSnap.data();
+                userPoints = data.points || 0;
+                currentUser.referralCode = data.referralCode || generateReferralCode();
                 document.getElementById("user-points").textContent = userPoints;
+                document.getElementById("referral-code").textContent = currentUser.referralCode;
+                document.getElementById("invite-container").style.display = "block";
+                document.getElementById("invite-message").style.display = "none";
+                updateUserPoints(); // Simpan kode referral jika baru dibuat
             }
         });
     }
@@ -141,15 +157,37 @@ function handleWithdraw(event) {
     }
 }
 
-// Fungsi undang teman (simulasi)
-function inviteFriend() {
+// Fungsi untuk klaim referral
+function claimReferral(event) {
+    event.preventDefault();
     if (!currentUser) {
         alert("Please register or login first!");
         return;
     }
-    userPoints += 20;
-    updateUserPoints();
-    alert("You earned 20 points for inviting a friend (simulated)!");
+    const referralCode = document.getElementById("referral-input").value.trim();
+
+    // Cari pengguna dengan kode referral
+    getDoc(doc(db, "users", referralCode)).then(docSnap => {
+        if (docSnap.exists()) {
+            const referrerId = docSnap.data().uid;
+            if (referrerId === currentUser.uid) {
+                alert("You cannot use your own referral code!");
+                return;
+            }
+
+            // Tambah 20 poin ke pengundang
+            getDoc(doc(db, "users", referrerId)).then(referrerSnap => {
+                if (referrerSnap.exists()) {
+                    const referrerPoints = (referrerSnap.data().points || 0) + 20;
+                    setDoc(doc(db, "users", referrerId), { points: referrerPoints }, { merge: true });
+                    alert("Referral claimed! The inviter earned 20 points.");
+                    document.getElementById("referral-input").value = "";
+                }
+            });
+        } else {
+            alert("Invalid referral code!");
+        }
+    }).catch(error => alert("Error: " + error.message));
 }
 
 // Fungsi pendaftaran
@@ -161,11 +199,13 @@ function handleRegister(event) {
     createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
             currentUser = userCredential.user;
+            currentUser.referralCode = generateReferralCode();
             document.getElementById("register-form-container").style.display = "none";
             document.getElementById("login-form-container").style.display = "none";
             document.getElementById("register-status").style.display = "block";
             document.getElementById("registered-user").textContent = email;
-            alert("Registration successful! You are now logged in.");
+            alert("Registration successful! Your referral code is: " + currentUser.referralCode);
+            updateUserPoints();
             loadUserPoints();
         })
         .catch(error => alert("Error: " + error.message));
@@ -201,6 +241,8 @@ function handleLogout() {
         document.getElementById("user-points").textContent = "0";
         document.getElementById("withdraw-form").style.display = "block";
         document.getElementById("withdraw-status").style.display = "none";
+        document.getElementById("invite-container").style.display = "none";
+        document.getElementById("invite-message").style.display = "block";
         alert("You have logged out.");
     });
 }
@@ -234,6 +276,8 @@ onAuthStateChanged(auth, user => {
         document.getElementById("register-form-container").style.display = "block";
         document.getElementById("login-form-container").style.display = "none";
         document.getElementById("register-status").style.display = "none";
+        document.getElementById("invite-container").style.display = "none";
+        document.getElementById("invite-message").style.display = "block";
     }
 });
 
@@ -253,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("watch-video-btn").addEventListener("click", watchMissionVideo);
     document.getElementById("attendance-btn").addEventListener("click", checkAttendance);
     document.getElementById("withdraw-form").addEventListener("submit", handleWithdraw);
-    document.getElementById("invite-btn").addEventListener("click", inviteFriend);
+    document.getElementById("claim-referral-form").addEventListener("submit", claimReferral);
     document.getElementById("register-form").addEventListener("submit", handleRegister);
     document.getElementById("login-form").addEventListener("submit", handleLogin);
     document.getElementById("logout-btn").addEventListener("click", handleLogout);
