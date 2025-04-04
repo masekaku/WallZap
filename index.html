@@ -105,7 +105,14 @@
     <section id="invite" class="invite">
         <h2>Undang Teman</h2>
         <p>Invite friends and earn 20 points per referral!</p>
-        <button id="invite-btn" class="mission-btn">Invite (Simulated)</button>
+        <div id="invite-container" style="display: none;">
+            <p>Your Referral Code: <span id="referral-code">Loading...</span></p>
+            <form id="claim-referral-form">
+                <input type="text" id="referral-input" placeholder="Enter friend's referral code" required>
+                <button type="submit" class="mission-btn">Claim Referral (20 Points)</button>
+            </form>
+        </div>
+        <p id="invite-message" style="display: block;">Login to see your referral code!</p>
     </section>
 
     <footer>
