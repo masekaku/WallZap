@@ -51,7 +51,7 @@ function handleWatchVideo(event) {
 // Fungsi misi harian
 function watchMissionVideo() {
     if (!currentUser) {
-        alert("Please register and login first!");
+        alert("Please register or login first!");
         return;
     }
     const videoIframe = document.getElementById("mission-video");
@@ -99,7 +99,7 @@ function loadUserPoints() {
 // Fungsi kehadiran
 function checkAttendance() {
     if (!currentUser) {
-        alert("Please register and login first!");
+        alert("Please register or login first!");
         return;
     }
     userPoints += 5;
@@ -111,7 +111,7 @@ function checkAttendance() {
 function handleWithdraw(event) {
     event.preventDefault();
     if (!currentUser) {
-        alert("Please register and login first!");
+        alert("Please register or login first!");
         return;
     }
     if (userPoints >= 100) {
@@ -128,13 +128,13 @@ function handleWithdraw(event) {
             userId: currentUser.uid,
             email: currentUser.email,
             litecoinAddress: litecoinAddress,
-            amount: 0.000001, // 100 poin = 0.000001 LTC
+            amount: 0.00001, // 100 poin = 0.00001 LTC
             timestamp: serverTimestamp(),
             status: "pending"
         }).then(() => {
             document.getElementById("withdraw-form").style.display = "none";
             document.getElementById("withdraw-status").style.display = "block";
-            alert("Withdrawal request submitted! 0.001 LTC will be sent manually to " + litecoinAddress);
+            alert("Withdrawal request submitted! 0.00001 LTC will be sent manually to " + litecoinAddress);
         });
     } else {
         alert("You need at least 100 points to withdraw!");
@@ -144,7 +144,7 @@ function handleWithdraw(event) {
 // Fungsi undang teman (simulasi)
 function inviteFriend() {
     if (!currentUser) {
-        alert("Please register and login first!");
+        alert("Please register or login first!");
         return;
     }
     userPoints += 20;
@@ -161,11 +161,30 @@ function handleRegister(event) {
     createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
             currentUser = userCredential.user;
-            document.getElementById("register-form").style.display = "none";
-            document.getElementById("register-message").style.display = "none";
+            document.getElementById("register-form-container").style.display = "none";
+            document.getElementById("login-form-container").style.display = "none";
             document.getElementById("register-status").style.display = "block";
             document.getElementById("registered-user").textContent = email;
             alert("Registration successful! You are now logged in.");
+            loadUserPoints();
+        })
+        .catch(error => alert("Error: " + error.message));
+}
+
+// Fungsi login
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value.trim();
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+            currentUser = userCredential.user;
+            document.getElementById("register-form-container").style.display = "none";
+            document.getElementById("login-form-container").style.display = "none";
+            document.getElementById("register-status").style.display = "block";
+            document.getElementById("registered-user").textContent = email;
+            alert("Login successful!");
             loadUserPoints();
         })
         .catch(error => alert("Error: " + error.message));
@@ -176,8 +195,8 @@ function handleLogout() {
     signOut(auth).then(() => {
         currentUser = null;
         userPoints = 0;
-        document.getElementById("register-form").style.display = "block";
-        document.getElementById("register-message").style.display = "block";
+        document.getElementById("register-form-container").style.display = "block";
+        document.getElementById("login-form-container").style.display = "none";
         document.getElementById("register-status").style.display = "none";
         document.getElementById("user-points").textContent = "0";
         document.getElementById("withdraw-form").style.display = "block";
@@ -186,12 +205,25 @@ function handleLogout() {
     });
 }
 
+// Toggle antara login dan register
+function switchToLogin(event) {
+    event.preventDefault();
+    document.getElementById("register-form-container").style.display = "none";
+    document.getElementById("login-form-container").style.display = "block";
+}
+
+function switchToRegister(event) {
+    event.preventDefault();
+    document.getElementById("register-form-container").style.display = "block";
+    document.getElementById("login-form-container").style.display = "none";
+}
+
 // Cek status autentikasi
 onAuthStateChanged(auth, user => {
     if (user) {
         currentUser = user;
-        document.getElementById("register-form").style.display = "none";
-        document.getElementById("register-message").style.display = "none";
+        document.getElementById("register-form-container").style.display = "none";
+        document.getElementById("login-form-container").style.display = "none";
         document.getElementById("register-status").style.display = "block";
         document.getElementById("registered-user").textContent = user.email;
         loadUserPoints();
@@ -199,6 +231,9 @@ onAuthStateChanged(auth, user => {
         currentUser = null;
         userPoints = 0;
         document.getElementById("user-points").textContent = "0";
+        document.getElementById("register-form-container").style.display = "block";
+        document.getElementById("login-form-container").style.display = "none";
+        document.getElementById("register-status").style.display = "none";
     }
 });
 
@@ -220,5 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("withdraw-form").addEventListener("submit", handleWithdraw);
     document.getElementById("invite-btn").addEventListener("click", inviteFriend);
     document.getElementById("register-form").addEventListener("submit", handleRegister);
+    document.getElementById("login-form").addEventListener("submit", handleLogin);
     document.getElementById("logout-btn").addEventListener("click", handleLogout);
+    document.getElementById("switch-to-login").addEventListener("click", switchToLogin);
+    document.getElementById("switch-to-register").addEventListener("click", switchToRegister);
 });
